@@ -1,0 +1,148 @@
+.Create {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: auto;
+  max-height: 100vh;
+  background-color: #f7f7f7;
+}
+
+.create-header {
+  height: 4vh;
+  text-align: center;
+  padding: 15px;
+}
+.summary {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: last baseline;
+  gap: 1.5rem;
+  font-size: small;
+  font-weight: bold;
+}
+.create-header h3 {
+  letter-spacing: 1.1px;
+}
+.to-do-list-main {
+  margin: 10px;
+  width: 7rem;
+  height: 3vh;
+  padding: 10px;
+  border-radius: 15px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  background-color: antiquewhite;
+  align-items: center;
+  box-shadow: 0 1px 3px 2px lightcoral;
+}
+
+.to-do-list-main:hover {
+  box-shadow: 0px 2px 3px 1px lightcoral;
+  cursor: pointer;
+  background-color: rgb(230, 214, 193);
+  color: black;
+}
+.to-do-list-main p {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bolder;
+  font-size: small;
+}
+.cards-main {
+  padding: 10px;
+  margin: 30px auto;
+  width: 85%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  width: 18rem;
+  height: auto;
+  border-radius: 15px;
+  background-color: white;
+  padding: 20px;
+  font-size: small;
+}
+.cards h3 {
+  color: darkred;
+  text-transform: uppercase;
+  font-size: medium;
+}
+.name-desc {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: flex-start;
+  justify-content: first baseline;
+}
+.date {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.icons {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 2vh;
+}
+.pro-name {
+  width: 18rem;
+  display: flex;
+  justify-content: space-between;
+}
+.edit,
+.delete {
+  cursor: pointer;
+}
+.completed-date {
+  color: darkred;
+}
+.completed-tasks {
+  text-transform: uppercase;
+  border: 1px solid black;
+  font-size: small;
+  width: 140px;
+  height: auto;
+  max-height: 25vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: black;
+}
+
+.tasks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+.completedto {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  height: 35.5vh;
+  max-height: auto;
+  width: 100%;
+  background-color: rgb(44, 42, 42);
+  color: whitesmoke;
+  text-align: center;
+}
+.check-box {
+  cursor: pointer;
+}
