@@ -51,15 +51,12 @@ module.exports.loginUser = async (req, res) => {
 
     const user = await User.findOne({ email: body.email });
     if (!user) {
-      return res.status(403).json({ message: 'Please Sign in' });
+      return res.status(403).json({ message: 'Email or Password incorrect!' });
     }
     const isMatching = await bcrypt.compare(body.password, user.password);
     if (!isMatching) {
       return res.status(403).json({ message: 'Email or Password Incorrect!' });
     }
-    //If isMatching true
-    //Token Generate
-    // Anyone can eaisly access by calling this API. But users having this token can Login
 
     const token = jwt.sign(
       {

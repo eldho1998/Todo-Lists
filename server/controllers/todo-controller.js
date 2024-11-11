@@ -15,11 +15,12 @@ module.exports.getProjects = async (req, res) => {
 
 module.exports.postProjects = async (req, res) => {
   try {
+    console.log("Request body:", req.body);
     const newTodo = await Todo.create({
       projectName: req.body.projectName,
       projectDescription: req.body.projectDescription,
       date: req.body.date,
-      userID: req.body.userId,
+      // userID: req.body.userId,
       completed: false,
     });
 
@@ -29,7 +30,7 @@ module.exports.postProjects = async (req, res) => {
     });
   } catch (error) {
     console.error('Error posting project:', error);
-    res.status(500).json({ message: 'Server error', error });
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
 
@@ -37,11 +38,10 @@ module.exports.postProjects = async (req, res) => {
 
 module.exports.patchProjectsById = async (req, res) => {
   const { id } = req.params;
-  const body = req.body;
-  const { completed } = req.body;
+  const { completed, projectName } = req.body;
   try {
     const updatedData = {
-      ...req.body,
+      projectName,
       completed: completed !== undefined ? Boolean(completed) : undefined,
     };
     const project = await Todo.findByIdAndUpdate(id, updatedData, {
@@ -53,7 +53,11 @@ module.exports.patchProjectsById = async (req, res) => {
     }
     res.status(200).json({ message: 'Project updated successfully', project });
   } catch (e) {
-    res.status(500).json({ message: 'Error updating project', e });
+    console.error('Error updating project:', e); // For better debugging
+    res.status(500).json({
+      message: 'Error updating project',
+      error: e.message || e,
+    });
   }
 };
 
@@ -66,5 +70,18 @@ module.exports.deleteProjectByID = async (req, res) => {
     res.status(200).json({ message: 'delete project by id', project });
   } catch (e) {
     res.status(500).json({ message: 'Error', e });
+  }
+};
+
+//5) Delete all
+module.exports.deleteAllProjects = async (req, res) => {
+  try {
+    const deletedProjects = await Todo.deleteMany();
+    res.status(200).json({
+      message: 'All projects deleted successfully',
+      deletedCount: deletedProjects.deletedCount,
+    });
+  } catch (e) {
+    res.status(500).json({ message: 'Error deleting projects', error: e.message });
   }
 };
