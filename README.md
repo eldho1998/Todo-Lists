@@ -104,6 +104,7 @@ _DB-CONNECTED_
 
 ### 4. To generate the Summary as .md file,
 
+**Ensure Backend and Frontend is running on seperate Terminals ,then**
 **RUN in the /Todo-Lists> node generateSummary.js**
 **Open todo-summary.md file to view the Summary of Todo**
 
