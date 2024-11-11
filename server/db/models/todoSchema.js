@@ -17,7 +17,7 @@ const todoSchema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  userId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  // userId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 });
 
 const Todo = mongoose.model('Todo', todoSchema);

@@ -1,8 +1,9 @@
 import "./create.css";
-import { Modal, Button, Input, DatePicker } from "antd";
-import { useState } from "react";
+import { Modal, Button, Input, DatePicker, message } from "antd";
+import { useState, useEffect } from "react";
 import { PlusOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import moment from "moment";
+import axios from "axios";
 
 const Create = () => {
   const [editIndex, setEditIndex] = useState(null);
@@ -10,8 +11,8 @@ const Create = () => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [typed, setTyped] = useState({
-    name: "",
-    description: "",
+    projectName: "",
+    projectDescription: "",
     date: "",
     completed: false,
   });
@@ -36,28 +37,56 @@ const Create = () => {
       setTyped({ ...typed, [key]: e.target.value });
     }
   };
-  console.log(typed);
+  // console.log(typed);
 
-  const whenCreateClicked = () => {
-    if (!typed.name || !typed.description || !typed.date) {
-      return;
+  const whenCreateClicked = async () => {
+    try {
+      const response = await axios.post(
+        `http://localhost:9999/todo/create`,
+        typed
+      );
+      console.log("Response from backend:", response.data);
+      setTodo((prevTodo) => [...prevTodo, response.data]);
+      const updatedTodos = [...todo];
+      if (editIndex !== null) {
+        updatedTodos[editIndex] = typed;
+      } else {
+        updatedTodos.push(typed);
+      }
+      setTodo(updatedTodos);
+      setEditIndex(null);
+      setTyped({
+        projectName: "",
+        projectDescription: "",
+        date: "",
+        completed: false,
+      });
+      setOpen(false);
+    } catch (e) {
+      if (e.response) {
+        console.log("Error response from server:", e.response.data);
+        console.log("Status code:", e.response.status);
+        console.log("Headers:", e.response.headers);
+      } else {
+        console.log("Error while creating task:", e.message);
+      }
     }
-
-    const updatedTodos = [...todo];
-    if (editIndex !== null) {
-      updatedTodos[editIndex] = typed;
-    } else {
-      updatedTodos.push(typed);
-    }
-    setTodo(updatedTodos);
-    setEditIndex(null);
-    setTyped({ name: "", description: "", date: "", completed: false });
-    setOpen(false);
   };
 
-  const handleDeleteOk = (index) => {
+  const handleDeleteOk = async (index) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:9999/todo/${index}`
+      );
+      message.success("Successfully Deleted!");
+      console.log("res", response);
+      setDelOpen(false);
+      fetchTodos();
+    } catch (e) {
+      message.error("Delete Failed", e);
+    }
+
     setTodo(todo.filter((_, i) => i !== index));
-    setDelOpen(false);
   };
 
   const handleCancel = () => {
@@ -66,19 +95,62 @@ const Create = () => {
   };
 
   const onEditClick = (index) => {
+    setLoading(false);
     setTyped(todo[index]);
     setEditIndex(index);
     setOpen(true);
   };
 
+  // const onEditClick = async (index) => {
+  //   console.log("ddd:", index);
+  //   try {
+  //     setOpen(true);
+  //     setLoading(false);
+  //     const taskToEdit = todo[index];
+  //     setTyped({
+  //       projectName: taskToEdit.projectName,
+  //       projectDescription: taskToEdit.projectDescription,
+  //       date: taskToEdit.date,
+  //       completed: taskToEdit.completed,
+  //     });
+  //     const response = await axios.patch(
+  //       `http://localhost:9999/todo/${taskToEdit._id}`,
+  //       {
+  //         projectName: taskToEdit.projectName,
+  //         projectDescription: taskToEdit.projectDescription,
+  //         date: taskToEdit.date,
+  //         completed: taskToEdit.completed,
+  //       }
+  //     );
+  //     console.log("Task edited successfully:", response.data);
+  //   } catch (e) {
+  //     message.error("error while editing", e);
+  //   }
+  // };
+
   const handleCheckboxChange = (index) => {
     const updatedTodos = [...todo];
     updatedTodos[index].completed = !updatedTodos[index].completed;
     setTodo(updatedTodos);
+    console.log("up", updatedTodos);
   };
 
-  const completedTodos = todo.filter((item) => item.completed) || [];
-  const inCompletedTodos = todo.filter((item) => !item.completed) || [];
+  const completedTodos = todo.filter((item) => item.completed);
+  const inCompletedTodos = todo.filter((item) => !item.completed);
+
+  const fetchTodos = async () => {
+    try {
+      const response = await axios.get(`http://localhost:9999/todo`);
+      setTodo(response.data.todo);
+      console.log("rrespo", response.data);
+    } catch (e) {
+      console.log("error fetching todos", e);
+    }
+  };
+
+  useEffect(() => {
+    fetchTodos();
+  }, []);
 
   return (
     <div className="Create">
@@ -94,9 +166,15 @@ const Create = () => {
         onCancel={() => setOpen(false)}
       >
         <p>Project Name</p>
-        <Input onChange={(e) => onChange(e, "name")} />
+        <Input
+          onChange={(e) => onChange(e, "projectName")}
+          value={typed.projectName}
+        />
         <p>Description</p>
-        <Input onChange={(e) => onChange(e, "description")} />
+        <Input
+          onChange={(e) => onChange(e, "projectDescription")}
+          value={typed.projectDescription}
+        />
         <p>Task Start Date</p>
         <DatePicker
           value={typed.date ? moment(typed.date, "YYYY-MM-DD") : null}
@@ -124,7 +202,7 @@ const Create = () => {
         <div className="cards-main">
           {todo.map((item, index) => {
             return (
-              <div key={index} className="cards completed">
+              <div key={item._id || index} className="cards completed">
                 <div className="icons">
                   <div className="pro-name">
                     <input
@@ -133,8 +211,7 @@ const Create = () => {
                       checked={item.completed}
                       onChange={() => handleCheckboxChange(index)}
                     />
-                    <h4>Project: {index}</h4>
-
+                    <h4 className="headd">Project: {item.projectName}</h4>
                     <DeleteOutlined
                       onClick={() => showModal(index)}
                       className="delete"
@@ -142,15 +219,15 @@ const Create = () => {
                   </div>
 
                   <div className="name-desc">
-                    <h3>{item.name}</h3>
-                    <p>{item.description}</p>
+                    <h3>{item.projectName}</h3>
+                    <p>{item.projectDescription}</p>
                   </div>
                   {/* delete modal */}
                 </div>
                 <Modal
                   title="! Are you sure you want to Delete?"
                   open={delopn}
-                  onOk={() => handleDeleteOk(index)}
+                  onOk={() => handleDeleteOk(item._id)}
                   onCancel={handleCancel}
                 ></Modal>
                 <div className="date">
@@ -173,7 +250,7 @@ const Create = () => {
             return (
               <div key={index} className="completed-tasks">
                 <input type="checkbox" checked={true} readOnly />
-                <p>{item.name}</p>
+                <p>task : {item.projectName}</p>
                 <p className="completed-date">{item.date}</p>
               </div>
             );
