@@ -15,12 +15,11 @@ module.exports.getProjects = async (req, res) => {
 
 module.exports.postProjects = async (req, res) => {
   try {
-    console.log("Request body:", req.body);
+    console.log('Request body:', req.body);
     const newTodo = await Todo.create({
       projectName: req.body.projectName,
       projectDescription: req.body.projectDescription,
       date: req.body.date,
-      // userID: req.body.userId,
       completed: false,
     });
 
@@ -82,6 +81,47 @@ module.exports.deleteAllProjects = async (req, res) => {
       deletedCount: deletedProjects.deletedCount,
     });
   } catch (e) {
-    res.status(500).json({ message: 'Error deleting projects', error: e.message });
+    res
+      .status(500)
+      .json({ message: 'Error deleting projects', error: e.message });
+  }
+};
+
+//5.  GET Completed Projects
+module.exports.getCompletedProjects = async (req, res) => {
+  try {
+    const completedTodos = await Todo.find({ completed: true });
+
+    res.status(200).json({
+      message: 'Completed projects retrieved successfully',
+      projects: completedTodos,
+    });
+  } catch (error) {
+    console.error('Error fetching completed projects:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+//6.patch by id
+module.exports.patchByIdCompletedTodo = async (req, res) => {
+  const { id } = req.params;
+  const { completed } = req.body;
+
+  try {
+    const updatedTodo = await Todo.findByIdAndUpdate(
+      id,
+      { completed },
+      { new: true }
+    );
+    if (!updatedTodo) {
+      return res.status(404).json({ message: 'Todo item not found' });
+    }
+    res
+      .status(200)
+      .json({ message: 'Todo updated successfully', todo: updatedTodo });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: 'Error updating todo', error: error.message });
   }
 };
