@@ -2,15 +2,15 @@
 # Project Summary
 
 ### Summary:
-- **Completed Tasks:** 2 / 3 completed.
+- **Completed Tasks:** 1 / 3 completed.
 
 ---
 
 ### Section 1: Pending Tasks
-- [ ] Bike Service: Honda CB350, Kochi
+- [ ] Bike service: Honda CB350
+- [ ] Buy some medicines: Lacoset 100mg, Tonic for cold
 
 ---
 
 ### Section 2: Completed Tasks
-- [x] Buy some fruits: apple 1kg, grapes 1/2kg,
-- [x] Buy some medicines: Tonic for cough, Lacoset 50mg
+- [x] Buy some fruits: Apple 1 kg, Grapes 1/2 kg

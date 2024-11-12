@@ -13,9 +13,6 @@ const Navbar = () => {
   return (
     <div className="Navbar">
       <h2>TODO.s</h2>
-      <p>MY DASHBOARD</p>
-      <p>COMPLETED TASKS</p>
-      <p>HISTORY</p>
       <p onClick={() => navigate(`/`)}>SIGNUP</p>
       <p onClick={logOut}>LOGOUT</p>
     </div>
